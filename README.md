@@ -1,5 +1,14 @@
 # squawk-gitlab-ci-docker
 
+A basic docker image to be run in Gitlab CI to lint your SQL 
+migrations with [Squawk](https://github.com/sbdchd/squawk).
+
+## Image contents
+This image is based on debian:bullseye and contains:
+- Squawk
+- Git
+- Python 3 (with requests)
+
 ## Usage
 
 You can use the following job. It assumes:
@@ -27,3 +36,24 @@ lint psql:
     - git diff --name-only origin/main -- "migrations/*.sql" | xargs squawk --pg-version 16 --reporter json > db-report.json || true
     - python3 /json2glnote.py
 ```
+
+## Results example
+
+>## `migrations/20250424075437.sql`
+>### line 3: 🔶 **Warning** – _prefer-big-int_
+>- 💬 **Note**: Hitting the max 32 bit integer is possible and may break your application.
+>- 💡 **Help**: Use 64bit integer values instead to prevent hitting this limit.
+>### line 3: 🔶 **Warning** – _prefer-bigint-over-int_
+>- 💬 **Note**: Hitting the max 32 bit integer is possible and may break your application.
+>- 💡 **Help**: Use 64bit integer values instead to prevent hitting this limit.
+>### line 3: 🔶 **Warning** – _prefer-identity_
+>- 💬 **Note**: Serial types have confusing behaviors that make schema management difficult.
+>- 💡 **Help**: Use identity columns instead for more features and better usability.
+>## `migrations/20250424075936.sql`
+>### line 1: 🔶 **Warning** – _prefer-robust-stmts_
+>- 💡 **Help**: Consider wrapping in a transaction or adding a IF NOT EXISTS clause if the statement supports it.
+>### line 3: 🔶 **Warning** – _prefer-text-field_
+>- 💬 **Note**: Changing the size of a varchar field requires an ACCESS EXCLUSIVE lock.
+>- 💡 **Help**: Use a text field with a check constraint.
+>### line 3: 🔶 **Warning** – _prefer-robust-stmts_
+> ...
