@@ -3,6 +3,8 @@
 A basic docker image to be run in Gitlab CI to lint your SQL 
 migrations with [Squawk](https://github.com/sbdchd/squawk).
 
+It will convert results to a GitLab note format so you can see the results in your merge request.
+
 ## Image contents
 This image is based on debian:bullseye and contains:
 - Squawk
